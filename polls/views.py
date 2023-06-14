@@ -12,7 +12,7 @@ from rest_framework.generics import GenericAPIView
 from polls.serizlizers import QuestionSerializer
 
 from .forms import VoteForm
-from .models import Choice, PollOption, Question
+from .models import Choice, Question
 
 
 class IndexView(generic.ListView):

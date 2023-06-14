@@ -18,5 +18,5 @@ from django.urls import include, path #The include() function allows referencing
 
 urlpatterns = [
     path('polls/', include('polls.urls')), #point the root URLconf at the polls.urls module
-    path('admin/', admin.site.urls),
+    path('adminonly/', admin.site.urls),
 ]
