@@ -1,7 +1,21 @@
 {% load static %}
 
-<link rel="stylesheet" href="{% static 'polls/style.css' %}">
+<html>
+<head>
+    <title>Yvette's Polls Website</title>
+    <style>
+        h1 {
+            font-weight: bold;
+            font-size: 30px;
+            font-family: Avenir Next Condensed;
+            color: rgb(64, 117, 148);
+        }
+    </style>
+    <link rel="stylesheet" href="{% static 'polls/style.css' %}">
+</head>
 
+<body>
+    <h1>Yvette's Polls Website</h1>
 {% if latest_question_list %}
     <ul>
     {% for question in latest_question_list %}
@@ -11,3 +25,5 @@
 {% else %}
     <p>No polls are available.</p>
 {% endif %}
+</body>
+</html>
