@@ -25,6 +25,10 @@ class Question(models.Model):
         now = timezone.now()
         return now - datetime.timedelta(days=1) <= self.pub_date <= now
         # return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
+        
+    @property
+    def total_votes(self):
+        return self.choice_set.aggregate(total=models.Sum('votes'))['total'] or 0
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
@@ -32,3 +36,6 @@ class Choice(models.Model):
     votes = models.IntegerField(default=0)
     def __str__(self):
         return self.choice_text
+    
+class PollOption(models.Model):
+    name = models.CharField(max_length=200)

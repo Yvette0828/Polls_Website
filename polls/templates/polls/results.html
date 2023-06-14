@@ -7,3 +7,7 @@
 </ul>
 
 <a href="{% url 'polls:detail' question.id %}">Vote again?</a>
+<br>
+<a href="{% url 'polls:index' %}">Back to home page</a>
+<br>
+<a href="{% url 'polls:popup' question.id%}" class="trigger">Visualize Results</a>

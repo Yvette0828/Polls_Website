@@ -1,11 +1,12 @@
-from django.urls import path
 # from django.conf.urls import url
+from django.urls import path
 from django.urls import re_path as url
-from rest_framework import permissions
-from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions
 
 from . import views
+from .views import popup_view
 
 app_name = 'polls'
 
@@ -21,7 +22,8 @@ urlpatterns = [
     path('<int:pk>/', views.DetailView.as_view(), name='detail'),
     path('<int:pk>/results/', views.ResultsView.as_view(), name='results'),
     path('<int:question_id>/vote/', views.vote, name='vote'),
-    path('Question', views.QuestionView.as_view(), name='API')
+    path('Question', views.QuestionView.as_view(), name='API'),
+    path('<int:question_id>/popup/', views.popup_view, name='popup')
 ]
 
 schema_view = get_schema_view(

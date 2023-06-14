@@ -1,15 +1,18 @@
-from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
-from django.urls import reverse
-from django.views import generic
-from django.utils import timezone
-from polls.serizlizers import QuestionSerializer
-from .models import Choice, Question
-from django.http import JsonResponse
 from django.db import transaction
-from drf_yasg.utils import swagger_auto_schema
+from django.http import HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.utils import timezone
+from django.views import generic
 from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.generics import GenericAPIView
+
+from polls.serizlizers import QuestionSerializer
+
+from .forms import VoteForm
+from .models import Choice, PollOption, Question
+
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
@@ -89,3 +92,7 @@ def vote(request, question_id):
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+    
+def popup_view(request, question_id):
+    question = Question.objects.get(pk=question_id)
+    return render(request, 'popup.html', {'question': question})
