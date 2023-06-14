@@ -1,6 +1,8 @@
-
-<form action="{% url 'polls:vote' question.id %}" method="post">
+<form action="{% url 'polls:vote' question.id %}" method="post" onsubmit="return confirmVote()">
     {% csrf_token %}
+    {{ form.voter.label_tag }}
+    {{ form.voter }}
+    {{ form.choice_text }}
     <fieldset>
         <legend><h1>{{ question.question_text }}</h1></legend>
         {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
@@ -9,5 +11,21 @@
             <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
         {% endfor %}
     </fieldset>
-    <input type="submit" value="Vote">
-    </form>
+
+    <input type="hidden" id="voter-input" name="voter" value="">
+    <button type="submit">Vote</button>
+
+    <button onclick="location.href='{% url 'polls:index' %}'">Back to home page</button>
+
+    <script>
+        function confirmVote() {
+            var voter = prompt("Please enter your name:");
+            if (voter !== null && voter !== "") {
+                document.getElementById("voter-input").value = voter;
+                return true;  // 確認表單提交
+            } else {
+                return false;  // 阻止表單提交
+            }
+        }
+    </script>
+</form>

@@ -2,12 +2,20 @@
 
 <ul>
 {% for choice in question.choice_set.all %}
-    <li>{{ choice.choice_text }} -- {{ choice.votes }} vote{{ choice.votes|pluralize }}</li>
+    <li>
+        {{ choice.choice_text }} -- {{ choice.votes }} vote{{ choice.votes|pluralize }}
+        {% if choice.voters.all %}
+            (
+            {% for voter in choice.voters.all %}
+                {{ voter.username }}
+                {% if not forloop.last %}, {% endif %}
+            {% endfor %}
+            )
+        {% endif %}
+    </li>
 {% endfor %}
 </ul>
 
-<a href="{% url 'polls:detail' question.id %}">Vote again?</a>
-<br>
-<a href="{% url 'polls:index' %}">Back to home page</a>
-<br>
-<a href="{% url 'polls:popup' question.id%}" class="trigger">Visualize Results</a>
+<button onclick="location.href='{% url 'polls:detail' question.id %}'">Vote Again</button>
+<button onclick="location.href='{% url 'polls:index' %}'">Back to Home</button>
+<button onclick="location.href='{% url 'polls:popup' question.id %}'" class="trigger">Visualize Results</button>
