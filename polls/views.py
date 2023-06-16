@@ -75,44 +75,40 @@ class ResultsView(generic.DetailView):
     model = Question
     template_name = 'polls/results.html'
 
+
+
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     if request.method == 'POST':
         form = VoteForm(request.POST)
+        choices = request.POST.getlist('choice')  # 獲取選擇的多個選項值的列表
+
         if form.is_valid():
             name = request.POST['voter']
-            selected_choice = question.choice_set.get(pk=request.POST['choice'])
 
-            selected_choice.votes += 1
-            selected_choice.save()
+            for choice_id in choices:
+                selected_choice = question.choice_set.get(pk=choice_id)
+                selected_choice.votes += 1
+                selected_choice.save()
 
-            user, _ = User.objects.get_or_create(username=name)  # 尋找或創建使用者記錄
-            selected_choice.voters.add(user)  # 新增投票者至 voters 列表
+                user, _ = User.objects.get_or_create(username=name)  # 尋找或創建使用者記錄
+                selected_choice.voters.add(user)  # 新增投票者至 voters 列表
 
-            return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
-    else:
-        form = VoteForm()
+
+            if 'home' in request.POST:  # 檢查是否點擊了 "Back to home page" 按鈕
+                return redirect('polls:index')  # 重新導向至首頁
+            elif 'vote_click' in request.POST:
+                if len(choices) == 0:  # 檢查是否選擇了至少一個選項
+                    error_message = "You should select an option."
+                    # return HttpResponseRedirect(reverse('polls:detail', args=(question.id, error_message)))
+                    return render(request, 'polls/detail.html', {'question': question, 'form': form, 'error_message': error_message})
+            else:
+                return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+        
+        else:
+            form = VoteForm()
 
     return render(request, 'polls/results.html', {'question': question})
-
-# def vote(request, question_id):
-#     question = get_object_or_404(Question, pk=question_id)
-#     try:
-#         form = VoteForm(request.POST)
-#         selected_choice = question.choice_set.get(pk=request.POST['choice'])
-#     except (KeyError, Choice.DoesNotExist):
-#         # Redisplay the question voting form.
-#         return render(request, 'polls/detail.html', {
-#             'question': question,
-#             'error_message': "You didn't select a choice.",
-#         })
-#     else:
-#         selected_choice.votes += 1
-#         selected_choice.save()
-#         # Always return an HttpResponseRedirect after successfully dealing
-#         # with POST data. This prevents data from being posted twice if a
-#         # user hits the Back button.
-#         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
     
 def popup_view(request, question_id):
     question = Question.objects.get(pk=question_id)

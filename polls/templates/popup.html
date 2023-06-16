@@ -1,79 +1,83 @@
-<!-- <form action="{% url 'polls:vote' question.id %}" method="post"> -->
 <head>
-<!-- 引入 Chart.js 的庫文件 -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-    .chart-container {
-        max-width: 80%;
-        max-height: 80vh;
-    }
-</style>
-
+    <!-- 引入 Chart.js 的庫文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            max-width: 80%;
+            max-height: 80vh;
+        }
+    </style>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
 </head>
 <body>
-    <h1>{{ question.question_text }}</h1>
-    <div class="chart-container">
-        <canvas id="pieChart"></canvas>
-    </div>
+    <div class="container">
+        <h1>{{ question.question_text }}</h1>
+        <div class="chart-container">
+            <canvas id="pieChart"></canvas>
+        </div>
 
-    <script>
-        // 獲取投票結果數據
-        var data = [
-            {% for choice in question.choice_set.all %}
-                {
-                    label: "{{ choice.choice_text }}",
-                    value: {{ choice.votes }},
-                    percentage: {{ choice.votes }} / {{ question.total_votes }} * 100
-                },
-            {% endfor %}
-        ];
+        <script>
+            // 獲取投票結果數據
+            var data = [
+                {% for choice in question.choice_set.all %}
+                    {
+                        label: "{{ choice.choice_text }}",
+                        value: {{ choice.votes }},
+                        percentage: {{ choice.votes }} / {{ question.total_votes }} * 100
+                    },
+                {% endfor %}
+            ];
 
-        // 創建圓餅圖
-        var ctx = document.getElementById('pieChart').getContext('2d');
-        var myPieChart = new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: data.map(item => item.label),
-                datasets: [{
-                    label: 'Count',
-                    data: data.map(item => item.value),
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.6)',
-                        'rgba(54, 162, 235, 0.6)',
-                        'rgba(255, 206, 86, 0.6)',
-                        'rgba(75, 192, 192, 0.6)',
-                        'rgba(153, 102, 255, 0.6)',
-                    ],
-                }, {
-                    label: 'Percentage',
-                    data: data.map(item => item.percentage), // 新增的百分比數據
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                    ],
+            // 創建圓餅圖
+            var ctx = document.getElementById('pieChart').getContext('2d');
+            var myPieChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: data.map(item => item.label),
+                    datasets: [{
+                        label: 'Count',
+                        data: data.map(item => item.value),
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.6)',
+                            'rgba(54, 162, 235, 0.6)',
+                            'rgba(255, 206, 86, 0.6)',
+                            'rgba(75, 192, 192, 0.6)',
+                            'rgba(153, 102, 255, 0.6)',
+                        ],
+                    }, {
+                        label: 'Percentage',
+                        data: data.map(item => item.percentage), // 新增的百分比數據
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                        ],
                     }]
-            },
-            options: {
-                legend: {
-                    position: 'right'
                 },
-                tooltips: {
-                    callbacks: {
-                        label: function(tooltipItem, data) {
-                            var dataset = data.datasets[tooltipItem.datasetIndex];
-                            var total = dataset.data.reduce((accumulator, currentValue) => accumulator + currentValue);
-                            var value = dataset.data[tooltipItem.index];
-                            var percentage = ((value / total) * 100).toFixed(1) + '%';
-                            return `${data.labels[tooltipItem.index]}: ${value} vote${value !== 1 ? 's' : ''} (${percentage})`;
+                options: {
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    var dataset = context.dataset;
+                                    var total = dataset.data.reduce((accumulator, currentValue) => accumulator + currentValue);
+                                    var value = dataset.data[context.dataIndex];
+                                    var percentage = ((value / total) * 100).toFixed(1) + '%';
+                                    return `${context.label}: ${value} vote${value !== 1 ? 's' : ''} (${percentage})`;
+                                }
+                            }
                         }
                     }
                 }
-            }
-        });
-    </script>
-    <button onclick="javascript:history.back()">Go Back</button>
+            });
+        </script>
+        <button class="btn btn-primary" onclick="javascript:history.back()">Go Back</button>
+    </div>
 </body>
-

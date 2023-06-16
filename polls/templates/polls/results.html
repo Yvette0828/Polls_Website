@@ -1,21 +1,29 @@
-<h1>{{ question.question_text }}</h1>
-
-<ul>
-{% for choice in question.choice_set.all %}
-    <li>
-        {{ choice.choice_text }} -- {{ choice.votes }} vote{{ choice.votes|pluralize }}
-        {% if choice.voters.all %}
-            (
-            {% for voter in choice.voters.all %}
-                {{ voter.username }}
-                {% if not forloop.last %}, {% endif %}
+<head>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+</head>
+<body>
+    <div class="container">
+        <h1>{{ question.question_text }}</h1>
+        <ul class="list-group">
+            {% for choice in question.choice_set.all %}
+                <li class="list-group-item">
+                    {{ choice.choice_text }} -- {{ choice.votes }} vote{{ choice.votes|pluralize }}
+                    {% if choice.voters.all %}
+                        (
+                        {% for voter in choice.voters.all %}
+                            {{ voter.username }}
+                            {% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                        )
+                    {% endif %}
+                </li>
             {% endfor %}
-            )
-        {% endif %}
-    </li>
-{% endfor %}
-</ul>
-
-<button onclick="location.href='{% url 'polls:detail' question.id %}'">Vote Again</button>
-<button onclick="location.href='{% url 'polls:index' %}'">Back to Home</button>
-<button onclick="location.href='{% url 'polls:popup' question.id %}'" class="trigger">Visualize Results</button>
+        </ul>
+        
+        <button class="btn btn-primary" onclick="location.href='{% url 'polls:detail' question.id %}'">Vote Again</button>
+        <button class="btn btn-secondary" onclick="location.href='{% url 'polls:index' %}'">Back to Home</button>
+        <button class="btn btn-info" onclick="location.href='{% url 'polls:popup' question.id %}'">Visualize Results</button>
+    </div>
+</body>        
