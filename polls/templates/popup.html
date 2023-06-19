@@ -25,7 +25,7 @@
                     {
                         label: "{{ choice.choice_text }}",
                         value: {{ choice.votes }},
-                        percentage: {{ choice.votes }} / {{ question.total_votes }} * 100
+                        // percentage: {{ choice.votes }} / {{ question.total_votes }} * 100
                     },
                 {% endfor %}
             ];
@@ -46,7 +46,8 @@
                             'rgba(75, 192, 192, 0.6)',
                             'rgba(153, 102, 255, 0.6)',
                         ],
-                    }, {
+                    }, 
+                    {
                         label: 'Percentage',
                         data: data.map(item => item.percentage), // 新增的百分比數據
                         backgroundColor: [
@@ -56,7 +57,8 @@
                             'rgba(75, 192, 192, 0.2)',
                             'rgba(153, 102, 255, 0.2)',
                         ],
-                    }]
+                    }
+                ]
                 },
                 options: {
                     plugins: {
@@ -78,6 +80,6 @@
                 }
             });
         </script>
-        <button class="btn btn-primary" onclick="javascript:history.back()">Go Back</button>
+        <button class="btn btn-primary" onclick="javascript:history.back()">Back to poll</button>
     </div>
 </body>
