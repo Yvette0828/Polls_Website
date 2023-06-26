@@ -16,7 +16,15 @@
     </style>
 </head>
 <body>
+    <br>
     <form id="vote-form" action="{% url 'polls:vote' question.id %}" method="post">
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="http://127.0.0.1:8000/polls">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ question.question_text }}</li>
+            </ol>
+        </nav>
+        
         {% csrf_token %}
         <div class="mb-3">
             {{ form.voter.label_tag }}
@@ -80,6 +88,15 @@
         </div>
     </div>
 
+    <div class="vote-sucess-toast" role="alert" aria-live="assertive" aria-atomic="true" style="display: none; ">
+        <div class="d-flex">
+          <div class="toast-body">
+          Vote sucessful!
+         </div>
+          <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+
     {% if question.is_multiple_choice %}
     <script>
         function confirmVote(event) {
@@ -93,7 +110,7 @@
                 if (voter !== null && voter !== "") {
                     document.getElementById("voter-input").value = voter;
                     document.getElementById("vote-form").submit(); // 手動提交表單
-
+                    // document.getElementById("vote-sucess-toast").style.display = 'flex';
                 } else {
                     event.preventDefault(); // 阻止表單提交
                 }
@@ -116,6 +133,7 @@
                 if (voter !== null && voter !== "") {
                     document.getElementById("voter-input").value = voter;
                     document.getElementById("vote-form").submit(); // 手動提交表單
+                    document.getElementById("vote-sucess-toast").style.display = 'flex';
 
                 } else {
                     event.preventDefault(); // 阻止表單提交
