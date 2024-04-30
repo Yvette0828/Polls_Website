@@ -1,5 +1,5 @@
 # Polls_Website
- Website with Django Architecture
+ Website with Django framework.
 
 1. Open **terminal** and enter the command: ```python manage.py runserver```
 
